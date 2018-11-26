@@ -27,6 +27,8 @@ class Robot(object):
         """
         self.state = self.sense_state()
         self.create_Qtable_line(self.state)
+        
+        self.t += 1
 
     def set_status(self, learning=False, testing=False):
         """
@@ -47,9 +49,9 @@ class Robot(object):
         else:
             # TODO 2. Update parameters when learning
             pass
-            self.epsilon -= self.epsilon0*self.t/55 
+            self.epsilon =self.epsilon0 - self.epsilon0*self.t/55  
             
-        self.t += 1
+        
         return self.epsilon
 
     def sense_state(self):
