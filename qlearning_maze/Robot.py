@@ -49,7 +49,7 @@ class Robot(object):
         else:
             # TODO 2. Update parameters when learning
             pass
-            self.epsilon =self.epsilon0 - self.epsilon0*self.t/55  
+            self.epsilon =self.epsilon0 - self.epsilon0*self.t/55 
             
         
         return self.epsilon
@@ -71,8 +71,8 @@ class Robot(object):
         # Qtable[state] ={'u':xx, 'd':xx, ...}
         # If Qtable[state] already exits, then do
         # not change it.
-        if  self.Qtable.get(state) == None:
-            self.Qtable[state] = {k:0 for k in self.valid_actions}
+        
+        self.Qtable.setdefault(state,{k:0. for k in self.valid_actions})
 
     def choose_action(self):
         
@@ -87,10 +87,10 @@ class Robot(object):
             return random.random()<=self.epsilon
            
         def highest_q_action():
-            return self.valid_actions[np.argmax([v for k ,v in self.Qtable[self.state].items()])]
+            return max(self.Qtable[self.state],key=self.Qtable[self.state].get)
         
         def random_action():
-            return self.valid_actions[random.randint(0,len(self.valid_actions)-1)]
+            return random.choice(self.valid_actions)
 
 
         if self.learning:
@@ -114,13 +114,11 @@ class Robot(object):
         """
         
         if self.learning:
-            pass
             # TODO 8. When learning, update the q table according
             # to the given rules
-            Q_next = self.Qtable[next_state] 
+            max_Q_next = max(self.Qtable[next_state].values())
             Q_s_a = self.Qtable[self.state][action]  
-            q_max = max([v for k,v in Q_next.items()]) if  Q_next else 0    
-            self.Qtable[self.state][action]=Q_s_a+self.alpha*(r+self.gamma*q_max-Q_s_a)
+            self.Qtable[self.state][action] = Q_s_a+self.alpha*(r+self.gamma*max_Q_next-Q_s_a)
     def update(self):
         """
         Describle the procedure what to do when update the robot.
